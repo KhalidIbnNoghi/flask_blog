@@ -70,6 +70,35 @@ def new_post():
         return redirect(url_for("index"))
     return render_template("post.html", form=form)
 
+# Удаление постов
+@app.route('/delete/<int:id>',methods=['GET','POST'])
+def delete(id):
+    if request.method == 'GET':
+        p = Post.query.filter_by(id=id).first()
+        db.session.delete(p)
+        db.session.commit()
+    return redirect(url_for('index'))
+
+# Редактирование постов
+@app.route('/edit/<int:id>/', methods=['GET', 'POST'])
+@login_required
+def edit(id):
+    post = db.session.query(Post).filter(Post.id==id).first()
+
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+
+        post.title = title
+        post.content = content
+
+        db.session.commit()
+
+        return redirect(url_for('index', id=id))
+
+    return render_template('edit.html', post=post)
+
+
 # Интерфейс поста с возможностью добавления комментариев
 @app.route("/blog_single/<int:post_id>", methods=["GET", "POST"])
 def blog_single(post_id):

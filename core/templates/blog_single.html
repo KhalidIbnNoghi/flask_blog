@@ -14,15 +14,24 @@
         {% if current_user.has_liked_post(post) %}
             <a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}"><i class="bi bi-hand-thumbs-up-fill"></i></a>
             {{ post.likes.count() }} likes
+            <p></p>
+            <a href="{{url_for('delete',id=post.id)}}"><button type="button" class="btn btn-danger">Удалить</button></a>
+            <a href="{{url_for('edit',id=post.id)}}"><button type="button" class="btn btn-primary">Редактировать</button></a>
           {% else %}
             <a href="{{ url_for('like_action', post_id=post.id, action='like') }}"><i class="bi bi-hand-thumbs-up"></i></a>
           {{ post.likes.count() }} likes
+          <p></p>
+          <a href="{{url_for('delete',id=post.id)}}"><button type="button" class="btn btn-danger">Удалить</button></a>
+          <a href="{{url_for('edit',id=post.id)}}"><button type="button" class="btn btn-primary">Редактировать</button></a>
         {% endif %}
           {% else %}
           <a href="{{ url_for('login') }}"><i class="bi bi-hand-thumbs-up"></i></a>
           {{ post.likes.count() }} likes
-        {% endif %}
+          
         <p></p>
+        <a href="{{ url_for('login') }}"><button type="button" class="btn btn-danger">Удалить</button></a>
+        <a href="{{ url_for('login') }}"><button type="button" class="btn btn-primary">Редактировать</button></a>
+        {% endif %}
         </div>
     </div>
     <div class="card-footer text-body-secondary">
