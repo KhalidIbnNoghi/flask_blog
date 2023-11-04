@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card text-center">
+    <div class="card-header">
+        Подробнее о посте
+    </div>
+    <div class="card-body">
+      <p class="post_image1" class="img-link"><img src="{{ url_for('static', filename='images/img_7_horizontal.jpg') }}" alt="Image" class="img-fluid"></p>
+      <p class="title_1">{{ post.title }}</h5>
+      <p class="content_1">{{ post.content }}</p>
+      <div class="like_info">
+        {% if current_user.is_authenticated %}
+        {% if current_user.has_liked_post(post) %}
+            <a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}"><i class="bi bi-hand-thumbs-up-fill"></i></a>
+            {{ post.likes.count() }} likes
+          {% else %}
+            <a href="{{ url_for('like_action', post_id=post.id, action='like') }}"><i class="bi bi-hand-thumbs-up"></i></a>
+          {{ post.likes.count() }} likes
+        {% endif %}
+          {% else %}
+          <a href="{{ url_for('login') }}"><i class="bi bi-hand-thumbs-up"></i></a>
+          {{ post.likes.count() }} likes
+        {% endif %}
+        <p></p>
+        </div>
+    </div>
+    <div class="card-footer text-body-secondary">
+    </div>
+  </div>
+
+{% for comment in comments %}
+  <div class="card-body">
+    <h5 class="card-title">{{ comment.name }}</h5>
+  </div>
+</div>
+{% endfor %}
+
+{% if current_user.is_authenticated %}
+<form method="POST">
+    <input type="text" placeholder="Введите ваш комментарий" name="name">
+    <button type="submit">Отправить</button>
+</form>
+{% else %}
+<a href="{{ url_for('login') }}">Для добавления комментариев авторизуйтесь</a>
+{% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

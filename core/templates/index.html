@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+	<section class="section">
+		<div class="container">
+			<div class="row mb-4">
+				<div class="col-sm-6">
+					<p class="posts_title">Посты</p>
+					<p></p>
+        {% for post in posts %}			
+			<div class="row">
+				<div class="posts_container">
+					<div class="post-entry-alt">
+						<a href="{{ url_for('blog_single', post_id=post.id) }}" class="img-link"><img src="{{ url_for('static', filename='images/img_7_horizontal.jpg') }}" alt="Image" class="img-fluid"></a>
+						<div class="excerpt">							
+							<p class="title_1">{{ post.title }}</p>
+							<p class="content_1">{{ post.content }}</p>
+							<div class="post-meta align-items-center text-left clearfix">
+								<figure class="author-figure mb-0 me-3 float-start"><img src="{{ url_for('static', filename='images/person_1.jpg') }}" alt="Image" class="img-fluid"></figure>
+								<span class="like_info">
+								<p>By <a href="#">User</a></p>
+								<p> October 24, 2023 </p>
+								</span>
+							</div>
+							<div class="like_info">
+							{% if current_user.is_authenticated %}
+							{% if current_user.has_liked_post(post) %}
+									<a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}"><i class="bi bi-hand-thumbs-up-fill"></i></a>
+									{{ post.likes.count() }} likes
+								{% else %}
+									<a href="{{ url_for('like_action', post_id=post.id, action='like') }}"><i class="bi bi-hand-thumbs-up"></i></a>
+									{{ post.likes.count() }} likes
+							{% endif %}
+								{% else %}
+								<a href="{{ url_for('login') }}"><i class="bi bi-hand-thumbs-up"></i></a>
+								{{ post.likes.count() }} likes
+							{% endif %}
+							<p></p>
+							<p><a href="{{ url_for('blog_single', post_id=post.id) }}" class="read-more">Подробнее</a></p>
+							</div>
+						</div>
+					</div>
+				</div>
+      		</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  </section>
+  {% endblock %}
