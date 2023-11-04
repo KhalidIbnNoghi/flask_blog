@@ -1,10 +1,15 @@
 from flask_login import UserMixin
+from datetime import datetime
 
 from core import db, login_manager
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
+
+now = datetime.now()
+
 
 # Модель пользователя, отвечает за вход, регистрацию и посты
 class User(db.Model, UserMixin):
@@ -56,6 +61,8 @@ class Post(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), default='1', nullable=False)
     comments = db.relationship('Comment', backref='post', lazy=True)
     likes = db.relationship('PostLike', backref='post', lazy='dynamic')
+    posted_on=db.Column(db.DateTime,default=now.strftime("%Y-%m-%d %H:%M:%S"))
+
 
     def __repr__(self) -> str:
         return self.title
@@ -66,6 +73,7 @@ class Comment(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(), nullable=False)
     post_id = db.Column(db.Integer(), db.ForeignKey('posts.id'), nullable=True)
-
+    posted_on=db.Column(db.DateTime,default=now.strftime("%Y-%m-%d %H:%M:%S"))
+    
     def __repr__(self) -> str:
         return self.name

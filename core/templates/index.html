@@ -16,10 +16,10 @@
 							<p class="content_1">{{ post.content }}</p>
 							<div class="post-meta align-items-center text-left clearfix">
 								<figure class="author-figure mb-0 me-3 float-start"><img src="{{ url_for('static', filename='images/person_1.jpg') }}" alt="Image" class="img-fluid"></figure>
-								<span class="like_info">
+								<div class="like_info">
 								<p>By <a href="#">User</a></p>
-								<p> October 24, 2023 </p>
-								</span>
+								<p> {{post.posted_on}} </p>
+								</div>
 							</div>
 							<div class="like_info">
 							{% if current_user.is_authenticated %}
