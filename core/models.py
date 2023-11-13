@@ -17,7 +17,8 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)
     email = db.Column(db.String(), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
-    posts = db.relationship('Post', backref='author', lazy=True)
+    posts = db.relationship('Post', backref='user', lazy=True)
+    comments = db.relationship('Comment', backref='user', lazy=True)
     liked = db.relationship(
         'PostLike',
         foreign_keys='PostLike.user_id',
@@ -72,6 +73,7 @@ class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(), nullable=False)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), default='1', nullable=False)
     post_id = db.Column(db.Integer(), db.ForeignKey('posts.id'), nullable=True)
     posted_on=db.Column(db.DateTime,default=now.strftime("%Y-%m-%d %H:%M:%S"))
     

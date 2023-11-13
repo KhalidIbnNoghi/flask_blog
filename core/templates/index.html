@@ -17,7 +17,7 @@
 							<div class="post-meta align-items-center text-left clearfix">
 								<figure class="author-figure mb-0 me-3 float-start"><img src="{{ url_for('static', filename='images/person_1.jpg') }}" alt="Image" class="img-fluid"></figure>
 								<div class="like_info">
-								<p>By <a href="#">User</a></p>
+								<p>By <a href="#">{{ post.user.email }}</a></p>
 								<p> {{post.posted_on}} </p>
 								</div>
 							</div>

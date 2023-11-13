@@ -17,7 +17,7 @@ from core.models import User, Post, PostLike, Comment
 @app.route("/")
 def index():
     posts = Post.query.all()
-    return render_template("index.html", posts=posts)
+    return render_template("index.html", posts=posts, user=current_user)
 
 # Авторизация пользователя
 @app.route('/login', methods=['GET', 'POST'])
@@ -64,11 +64,11 @@ def register():
 def new_post():
     form = PostForm()
     if request.method == "POST":
-        post = Post(title=form.title.data, content=form.content.data)
+        post = Post(title=form.title.data, content=form.content.data, user_id=current_user.id)
         db.session.add(post)
         db.session.commit()
         return redirect(url_for("index"))
-    return render_template("post.html", form=form)
+    return render_template("post.html", form=form, user=current_user)
 
 # Удаление постов
 @app.route('/delete/<int:id>',methods=['GET','POST'])
@@ -105,7 +105,7 @@ def blog_single(post_id):
     post = Post.query.get(post_id)
     comments = post.comments
     if request.method == "POST":
-        comment = Comment(name=request.form.get("name"), post=post)
+        comment = Comment(name=request.form.get("name"), post=post, user_id=current_user.id)
         db.session.add(comment)
         db.session.commit()
     return render_template("blog_single.html", post=post, comments=comments)
