@@ -4,8 +4,10 @@
 <p></p>
 <form method="POST" action="/add_post">
   {{ form.csrf_token }}
-  {{ form.title.label }} {{ form.title }}
-  {{ form.content.label }} {{ form.content }}
+  &nbsp; Заголовок {{ form.title }}
+  <p></p>
+  &nbsp; Текст {{ form.content }}
+  <p></p>
   <input type="submit" value="Опубликовать">
 </form>
 <p></p>
