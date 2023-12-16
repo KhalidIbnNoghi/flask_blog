@@ -15,6 +15,7 @@ from core.models import User, Post, PostLike, Comment
 
 # Основной роут отвечающий за главную страницу
 @app.route("/")
+@login_required
 def index():
     posts = Post.query.all()
     return render_template("index.html", posts=posts, user=current_user)
@@ -71,44 +72,60 @@ def new_post():
     return render_template("post.html", form=form, user=current_user)
 
 # Удаление постов
-@app.route('/delete/<int:id>',methods=['GET','POST'])
+@app.route('/blog_single/delete/<int:id>',methods=['GET','POST'])
 def delete(id):
-    if request.method == 'GET':
-        p = Post.query.filter_by(id=id).first()
-        db.session.delete(p)
-        db.session.commit()
-    return redirect(url_for('index'))
+    p = Post.query.filter_by(id=id).first()
+    id = current_user.id
+    if id == p.user_id:
+        if request.method == 'GET':
+            db.session.delete(p)
+            db.session.commit()
+        return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
 
 # Редактирование постов
-@app.route('/edit/<int:id>/', methods=['GET', 'POST'])
+@app.route('/blog_single/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit(id):
     post = db.session.query(Post).filter(Post.id==id).first()
+    id = current_user.id
+    if id == post.user_id:
+        if request.method == 'POST':
+            title = request.form['title']
+            content = request.form['content']
 
-    if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
+            post.title = title
+            post.content = content
 
-        post.title = title
-        post.content = content
+            db.session.commit()
 
-        db.session.commit()
+            return redirect(url_for('index', id=id))
 
-        return redirect(url_for('index', id=id))
-
-    return render_template('edit.html', post=post)
+        return render_template('edit.html', post=post)
+    else:
+        return redirect(url_for('index'))
 
 
 # Интерфейс поста с возможностью добавления комментариев
 @app.route("/blog_single/<int:post_id>", methods=["GET", "POST"])
 def blog_single(post_id):
     post = Post.query.get(post_id)
-    comments = post.comments
-    if request.method == "POST":
-        comment = Comment(name=request.form.get("name"), post=post, user_id=current_user.id)
-        db.session.add(comment)
-        db.session.commit()
-    return render_template("blog_single.html", post=post, comments=comments)
+    id = current_user.id
+    if id == post.user_id:
+        comments = post.comments
+        if request.method == "POST":
+            comment = Comment(name=request.form.get("name"), post=post, user_id=current_user.id)
+            db.session.add(comment)
+            db.session.commit()
+        return render_template("blog_single_user.html", post=post, comments=comments)
+    else:
+        comments = post.comments
+        if request.method == "POST":
+            comment = Comment(name=request.form.get("name"), post=post, user_id=current_user.id)
+            db.session.add(comment)
+            db.session.commit()
+        return render_template("blog_single.html", post=post, comments=comments)
 
 # Функционал для лайков и дизлайков постов
 @app.route('/like/<int:post_id>/<action>')
